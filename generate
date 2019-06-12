@@ -1,0 +1,302 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090
+
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s inherit_errexit
+[[ -n "${VERBOSE:+x}" ]] && set -o verbose
+[[ -n "${DEBUG:-}" ]] && IS_DEBUG=true || IS_DEBUG=false
+
+# References:
+# https://www.wikiwand.com/en/ANSI_escape_code
+# https://misc.flogisoft.com/bash/tip_colors_and_formatting
+# https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+# http://ascii-table.com/ansi-escape-sequences.php
+# https://bluesock.org/~willkg/dev/ansi.html#sequences
+# https://vt100.net/docs/vt510-rm/chapter4.html
+
+# https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+# ╔══════════╦════════════════════════════════╦═════════════════════════════════════════════════════════════════════════╗
+# ║  Code    ║             Effect             ║                                   Note                                  ║
+# ╠══════════╬════════════════════════════════╬═════════════════════════════════════════════════════════════════════════╣
+# ║ 0        ║  Reset / Normal                ║  all attributes off                                                     ║
+# ║ 1        ║  Bold or increased intensity   ║                                                                         ║
+# ║ 2        ║  Faint (decreased intensity)   ║  Not widely supported.                                                  ║
+# ║ 3        ║  Italic                        ║  Not widely supported. Sometimes treated as inverse.                    ║
+# ║ 4        ║  Underline                     ║                                                                         ║
+# ║ 5        ║  Slow Blink                    ║  less than 150 per minute                                               ║
+# ║ 6        ║  Rapid Blink                   ║  MS-DOS ANSI.SYS; 150+ per minute; not widely supported                 ║
+# ║ 7        ║  [[reverse video]]             ║  swap foreground and background colors                                  ║
+# ║ 8        ║  Conceal                       ║  Not widely supported.                                                  ║
+# ║ 9        ║  Crossed-out                   ║  Characters legible, but marked for deletion.  Not widely supported.    ║
+# ║ 10       ║  Primary(default) font         ║                                                                         ║
+# ║ 11–19    ║  Alternate font                ║  Select alternate font `n-10`                                           ║
+# ║ 20       ║  Fraktur                       ║  hardly ever supported                                                  ║
+# ║ 21       ║  Bold off or Double Underline  ║  Bold off not widely supported; double underline hardly ever supported. ║
+# ║ 22       ║  Normal color or intensity     ║  Neither bold nor faint                                                 ║
+# ║ 23       ║  Not italic, not Fraktur       ║                                                                         ║
+# ║ 24       ║  Underline off                 ║  Not singly or doubly underlined                                        ║
+# ║ 25       ║  Blink off                     ║                                                                         ║
+# ║ 27       ║  Inverse off                   ║                                                                         ║
+# ║ 28       ║  Reveal                        ║  conceal off                                                            ║
+# ║ 29       ║  Not crossed out               ║                                                                         ║
+# ║ 30–37    ║  Set foreground color          ║  See color table below                                                  ║
+# ║ 38       ║  Set foreground color          ║  Next arguments are `5;n` or `2;r;g;b`, see below                       ║
+# ║ 39       ║  Default foreground color      ║  implementation defined (according to standard)                         ║
+# ║ 40–47    ║  Set background color          ║  See color table below                                                  ║
+# ║ 48       ║  Set background color          ║  Next arguments are `5;n` or `2;r;g;b`, see below                       ║
+# ║ 49       ║  Default background color      ║  implementation defined (according to standard)                         ║
+# ║ 51       ║  Framed                        ║                                                                         ║
+# ║ 52       ║  Encircled                     ║                                                                         ║
+# ║ 53       ║  Overlined                     ║                                                                         ║
+# ║ 54       ║  Not framed or encircled       ║                                                                         ║
+# ║ 55       ║  Not overlined                 ║                                                                         ║
+# ║ 60       ║  ideogram underline            ║  hardly ever supported                                                  ║
+# ║ 61       ║  ideogram double underline     ║  hardly ever supported                                                  ║
+# ║ 62       ║  ideogram overline             ║  hardly ever supported                                                  ║
+# ║ 63       ║  ideogram double overline      ║  hardly ever supported                                                  ║
+# ║ 64       ║  ideogram stress marking       ║  hardly ever supported                                                  ║
+# ║ 65       ║  ideogram attributes off       ║  reset the effects of all of 60-64                                      ║
+# ║ 90–97    ║  Set bright foreground color   ║  aixterm (not in standard)                                              ║
+# ║ 100–107  ║  Set bright background color   ║  aixterm (not in standard)                                              ║
+# ╚══════════╩════════════════════════════════╩═════════════════════════════════════════════════════════════════════════╝
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+source "$SCRIPT_DIR"/deps/lobash/src/import.bash
+import ask
+
+init() {
+  declare -g TARGET
+  if [[ -z ${1:-} ]]; then
+    TARGET=colors.bash
+  else
+    if [[ -d $1 ]]; then
+      TARGET=${1}/colors.bash
+    else
+      TARGET=${1}
+    fi
+  fi
+
+  declare -g BASE_COLORS=(
+    BLACK
+    RED
+    GREEN
+    YELLOW
+    BLUE
+    PURPLE
+    CYAN
+    WHITE
+  )
+
+  declare -ga BG_COLORS
+  local COLOR
+  for COLOR in "${BG_COLORS[@]}"; do
+    BG_COLORS+=("$COLOR")
+  done
+
+  local -a attrs=(
+    RESET     0
+    BOLD      1
+    # FAINT 2
+    # ITALIC 3
+    UNDERLINE 4
+    BLINK     5
+    # RAPID_BLINK 6
+    REVERSE   7
+    # CONCEAL 8
+    # CROSSED_OUT 9
+    BLACK     30
+    RED       31
+    GREEN     32
+    YELLOW    33
+    BLUE      34
+    PURPLE    35
+    CYAN      36
+    WHITE     37
+    RESET_FG  39
+    BLACK_BG  40
+    RED_BG    41
+    GREEN_BG  42
+    YELLOW_BG 43
+    BLUE_BG   44
+    PURPLE_BG 45
+    CYAN_BG   46
+    WHITE_BG  47
+    RESET_BG  49
+    GREY      90
+  )
+
+  local len=${#attrs[@]}
+  local i
+  for (( i = 0; i < "$len"; i+=2 )); do
+    declare -g "${attrs[$i]}"
+    read -r "${attrs[$i]}" <<< "${attrs[$((i+1))]}"
+  done
+}
+
+_BG() {
+  printf '%s' $(($1 + 10))
+}
+
+_BRIGHT() {
+  printf '%s' $(($1 + 60))
+}
+
+# Valid Formats:
+# "${ESC}[{FG_COLOR}m"
+# "${ESC}[{FG_COLOR};{ATTR}m"
+# "${ESC}[{FG_COLOR};{BG_COLOR};{ATTR}m"
+
+ansi() {
+  local ESC='\e'
+  # local ESC=$'\033'
+  # local ESC=$'\x1B'
+  # local ESC=$'\u001b'
+  # Control Sequence Introducer
+  local CSI="${ESC}["
+  # Operating System Command
+  local OSC="${ESC}]"
+  # String Terminator
+  local ST="${ESC}\\"
+
+  local c name
+  local str=''
+  for c in "$@"; do
+    if [[ $c =~ ^[0-9]+$ ]]; then
+      str="${str};${c}"
+    else
+      name=${c}
+      str="${str};${!name}"
+    fi
+  done
+
+  printf '%s%sm' "$CSI" "${str:1}"
+}
+
+safe_rm() {
+  local path=$1
+  if [[ $path == / ]]; then
+    echo "Dangerous! Do not rm $path"
+    return 3
+  fi
+
+  if [[ $(dirname "$path") == / ]]; then
+    echo "Dangerous! Do not rm $path"
+    return 3
+  fi
+
+  rm -rf "$path"
+}
+
+clean() {
+  if [[ -f $TARGET ]]; then
+    local answer
+    answer=$(l.ask "Existed file: ${TARGET}. Overwrite it?" N)
+    echo "$answer"
+    case $answer in
+      YES )
+        ;;
+      * )
+        echo "Not overwrite it. No color file will be generated."
+        exit 0
+        ;;
+    esac
+  fi
+
+  safe_rm "$TARGET"
+}
+
+write() {
+  printf -- '%s\n' "$*" >> "$TARGET"
+}
+
+write_color() {
+  printf -- '%s%s=%s\n' "${PREFIX:-}" "$1" "'$2'" >> "$TARGET"
+}
+
+write_comment_title() {
+  printf -- '\n# %s\n' "$*" >> "$TARGET"
+}
+
+general_colors() {
+  local prefix=${1:+$1_}
+  (( $# > 0 )) && shift
+
+  local colorNum op
+  for color in "${BASE_COLORS[@]}"; do
+    colorNum=${!color}
+    local ops=()
+    for op in "$@"; do
+      if [[ $op =~ ^_ ]]; then
+        if [[ $op == _BRIGHT ]]; then
+          colorNum="$($op "${colorNum}")"
+        else
+          ops+=( "$($op "${colorNum}")" )
+        fi
+      else
+        ops+=( "$op" )
+      fi
+    done
+    write_color "${prefix}$color" "$(ansi "$colorNum" "${ops[@]}")"
+  done
+}
+
+general_bright_colors() {
+  local prefix=${1:+$1_}
+  (( $# > 0 )) && shift
+
+  local color
+  for color in "${BASE_COLORS[@]}"; do
+    write_color "${prefix}$color" "$(ansi "$(( color + 60 ))" "$@")"
+  done
+}
+
+generate() {
+  write '# This file is generated by https://github.com/adoyle-h/shell-colors'
+  write '# Author: ADoyle <adoyle.h@gmail.com>'
+  write '# License: BSD 3-clause License'
+  write '# Attentions: GREY may not work in some shells'
+
+  write_comment_title 'General Foreground Colors'
+  general_colors
+  write_color GREY "$(ansi GREY)"
+
+  write_comment_title 'General Background Colors'
+  general_colors BG _BG
+  write_color BG_GREY "$(ansi "$(_BG "$GREY")")"
+
+  write_comment_title 'BOLD'
+  general_colors BOLD BOLD
+  write_color BOLD_GREY "$(ansi BOLD GREY)"
+
+  write_comment_title 'UNDERLINE'
+  general_colors UL UNDERLINE
+  write_color UL_GREY "$(ansi UNDERLINE GREY)"
+
+  write_comment_title 'BLINK'
+  general_colors BLK BLINK
+  write_color BLK_GREY "$(ansi BLINK GREY)"
+
+  write_comment_title 'REVERSE'
+  general_colors REV REVERSE
+  write_color REV_GREY "$(ansi REVERSE GREY)"
+
+  write_comment_title 'BRIGHT'
+  general_colors BRI _BRIGHT
+
+  write_comment_title 'BRIGHT & BOLD'
+  general_colors BRI_BOLD _BRIGHT BOLD
+
+  write_comment_title 'RESET'
+  write_color "RESET_FG"  "$(ansi RESET_FG)"
+  write_color "RESET_BG"  "$(ansi RESET_BG)"
+  write_color "RESET_ALL"  "$(ansi RESET)"
+
+  echo "Generated file: $TARGET"
+}
+
+init "$@"
+clean
+generate "$@"

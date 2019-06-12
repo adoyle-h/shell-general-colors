@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090
+
+set -o errexit
+set -o nounset
+set -o pipefail
+shopt -s inherit_errexit
+[[ -n "${VERBOSE:+x}" ]] && set -o verbose
+[[ -n "${DEBUG:-}" ]] && IS_DEBUG=true || IS_DEBUG=false
+
+readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
+
+source "$SCRIPT_DIR"/colors.bash
+
+colors=(
+  BLACK
+  RED
+  GREEN
+  YELLOW
+  BLUE
+  PURPLE
+  CYAN
+  WHITE
+  GREY
+)
+
+print_colors() {
+  local prefix=${1:-}
+  local key
+  for c in "${colors[@]}"; do
+    key=${prefix}${c}
+    [[ ! -v $key ]] && continue
+    echo -e "- ${!key}${prefix}${c}${RESET_ALL}"
+  done
+}
+
+printf '\n%s\n' '[General Foreground Colors]'
+print_colors
+printf '\n%s\n' '[General Background Colors]'
+print_colors BG_
+printf '\n%s\n' '[Bold Colors]'
+print_colors BOLD_
+printf '\n%s\n' '[Underline Colors]'
+print_colors UL_
+printf '\n%s\n' '[Blink Colors]'
+print_colors BLK_
+printf '\n%s\n' '[Reverse Colors]'
+print_colors REV_
+printf '\n%s\n' '[Bright Colors]'
+print_colors BRI_
+printf '\n%s\n' '[Bright & Bold Colors]'
+print_colors BRI_BOLD_
