@@ -22,6 +22,7 @@ Shell General Colors provides simple shell variables which aim to be fast in run
 - [Suggestion, Bug Reporting, Contributing](#suggestion-bug-reporting-contributing)
 - [Copyright and License](#copyright-and-license)
 - [References](#references)
+- [Related Projects](#related-projects)
 
 <!-- /MarkdownTOC -->
 
@@ -123,6 +124,10 @@ See the [NOTICE][] file distributed with this work for additional information re
 - [ansi codes](https://bluesock.org/~willkg/dev/ansi.html#sequences)
 - [vt100.net - ANSI Control Functions Summary](https://vt100.net/docs/vt510-rm/chapter4.html)
 - [JAFROG'S DEV BLOG - Colors In Terminal](http://jafrog.com/2013/11/23/colors-in-terminal.html)
+
+## Related Projects
+
+- [lobash](https://github.com/adoyle-h/lobash): A collections of functions to enhance development efficiency.
 
 <!-- links -->
 
