@@ -21,6 +21,7 @@ Shell General Colors provides simple shell variables which aim to be fast in run
     - [Set variable prefix](#set-variable-prefix)
 - [Suggestion, Bug Reporting, Contributing](#suggestion-bug-reporting-contributing)
 - [Copyright and License](#copyright-and-license)
+- [References](#references)
 
 <!-- /MarkdownTOC -->
 
@@ -113,6 +114,15 @@ See the [LICENSE][] file for the specific language governing permissions and lim
 
 See the [NOTICE][] file distributed with this work for additional information regarding copyright ownership.
 
+## References
+
+- [Wikipedia - ANSI escape code](https://www.wikiwand.com/en/ANSI_escape_code)
+- [Stackoverflow - List of ANSI color escape sequences](https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences)
+- [FLOZz' MISC » bash:tip_colors_and_formatting](https://misc.flogisoft.com/bash/tip_colors_and_formatting)
+- [ASCII Table - ANSI Escape sequences](http://ascii-table.com/ansi-escape-sequences.php)
+- [ansi codes](https://bluesock.org/~willkg/dev/ansi.html#sequences)
+- [vt100.net - ANSI Control Functions Summary](https://vt100.net/docs/vt510-rm/chapter4.html)
+- [JAFROG'S DEV BLOG - Colors In Terminal](http://jafrog.com/2013/11/23/colors-in-terminal.html)
 
 <!-- links -->
 

@@ -8,14 +8,6 @@ shopt -s inherit_errexit
 [[ -n "${VERBOSE:+x}" ]] && set -o verbose
 [[ -n "${DEBUG:-}" ]] && IS_DEBUG=true || IS_DEBUG=false
 
-# References:
-# https://www.wikiwand.com/en/ANSI_escape_code
-# https://misc.flogisoft.com/bash/tip_colors_and_formatting
-# https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
-# http://ascii-table.com/ansi-escape-sequences.php
-# https://bluesock.org/~willkg/dev/ansi.html#sequences
-# https://vt100.net/docs/vt510-rm/chapter4.html
-
 # https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
 # ╔══════════╦════════════════════════════════╦═════════════════════════════════════════════════════════════════════════╗
 # ║  Code    ║             Effect             ║                                   Note                                  ║
