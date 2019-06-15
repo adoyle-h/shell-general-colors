@@ -32,7 +32,7 @@ See [Usage](#usage) and run `./test` to preview.
 
 ## Versioning
 
-No version yet.
+See git [release tags][].
 
 The versioning follows the rules of SemVer 2.0.0.
 
@@ -132,6 +132,7 @@ See the [NOTICE][] file distributed with this work for additional information re
 <!-- links -->
 
 [issue]: https://github.com/adoyle-h/shell-general-colors/issues
+[release tags]: https://github.com/adoyle-h/shell-general-colors/releases
 [LICENSE]: ./LICENSE
 [NOTICE]: ./NOTICE
 [ansi]: https://github.com/fidian/ansi
