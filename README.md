@@ -13,13 +13,13 @@ Shell General Colors provides simple shell variables which aim to be fast in run
 <!-- MarkdownTOC GFM -->
 
 - [Preview](#preview)
-- [Versioning](#versioning)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Advanced Usage](#advanced-usage)
     - [Change generated file path](#change-generated-file-path)
     - [Set variable prefix](#set-variable-prefix)
 - [Suggestion, Bug Reporting, Contributing](#suggestion-bug-reporting-contributing)
+- [Versioning](#versioning)
 - [Copyright and License](#copyright-and-license)
 - [References](#references)
 - [Related Projects](#related-projects)
@@ -29,16 +29,6 @@ Shell General Colors provides simple shell variables which aim to be fast in run
 ## Preview
 
 See [Usage](#usage) and run `./test` to preview.
-
-## Versioning
-
-See git [release tags][].
-
-The versioning follows the rules of SemVer 2.0.0.
-
-**Attentions**: anything may have **BREAKING CHANGES** at **ANY TIME** when major version is zero (0.y.z), which is for initial development and the public API should be considered unstable.
-
-For more information on SemVer, please visit http://semver.org/.
 
 ## Installation
 
@@ -106,6 +96,16 @@ PREFIX=C_ ./generate
 ## Suggestion, Bug Reporting, Contributing
 
 Any suggestions and contributions are always welcome. Please open an [issue][] to talk with me.
+
+## Versioning
+
+See git [release tags][].
+
+The versioning follows the rules of SemVer 2.0.0.
+
+**Attentions**: anything may have **BREAKING CHANGES** at **ANY TIME** when major version is zero (0.y.z), which is for initial development and the public API should be considered unstable.
+
+For more information on SemVer, please visit http://semver.org/.
 
 ## Copyright and License
 
