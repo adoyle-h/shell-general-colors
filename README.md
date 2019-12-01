@@ -4,9 +4,10 @@ A script to generate sets of shell variables (ANSI escape sequences) to control 
 
 Support general colors: `BLACK` `RED` `GREEN` `YELLOW` `BLUE` `PURPLE` `CYAN` `WHITE` `GREY`.
 
-Not support custom RGB color. [ansi][] is a good choice.  
-So what difference between ansi and Shell General Colors? The main difference is the way to invoke.
-Shell General Colors provides simple shell variables which aim to be fast in runtime while ansi provides flexible functions.
+Not support custom RGB color. [ansi][] is a good choice.
+
+The difference between ansi and Shell General Colors is usability.
+Shell General Colors provides simple variables which aim to be fast in runtime while ansi provides flexible functions.
 
 ## TOC
 
@@ -36,7 +37,7 @@ See [Usage](#usage) and run `./test` to preview.
 
 ```sh
 # Clone this repo
-git clone --recurse-submodules --depth 1 https://github.com/adoyle-h/shell-general-colors.git
+git clone --depth 1 https://github.com/adoyle-h/shell-general-colors.git
 ```
 
 ## Usage
@@ -78,18 +79,24 @@ Then source the colors.bash file and use these variables directly.
 source <path>/colors.bash
 
 echo -e "this is ${RED}red${RESET_ALL}. this is ${YELLOW}yellow${RESET_ALL}."
+printf 'this is %bblue%b.' "${BLUE}" "${RESET_ALL}"
 ```
+
+If you want to use color variables with [here documents][]. Use [escaped variables](#export-escaped-variables).
 
 ## Advanced Usage
 
 ### Change generated file path
 
 ```sh
-./generate <file-path>
-# <file-path> generated
+output=~/colors.bash
+./generate "$output"
+# $output generated
 ```
 
 ### Set variable prefix
+
+If `-p=<prefix>` set, Add prefix `<prefix>` to each name of exported variables.
 
 ```sh
 ./generate -p C_
@@ -98,12 +105,14 @@ echo -e "this is ${RED}red${RESET_ALL}. this is ${YELLOW}yellow${RESET_ALL}."
 
 ### Export escaped variables
 
+If `-e=<escaped_suffix>` set, export escaped variables instead of general variables. And add suffix `<escaped_suffix>` to each name of escaped variables.
+
 ```sh
 ./generate -e _ESC
 # BLACK_ESC, RED_ESC, BOLD_BLACK_ESC ...
 ```
 
-You can use escaped variables with `cat`. For example,
+You can use escaped variables with [here documents][]. For example,
 
 ```sh
 cat <<EOF
@@ -162,3 +171,4 @@ See the [NOTICE][] file distributed with this work for additional information re
 [LICENSE]: ./LICENSE
 [NOTICE]: ./NOTICE
 [ansi]: https://github.com/fidian/ansi
+[here documents]: http://tldp.org/LDP/abs/html/here-docs.html

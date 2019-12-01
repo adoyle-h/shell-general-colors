@@ -65,8 +65,8 @@ Usage: $0 [-h|--help] [-p=<prefix>] [-e=<escaped_suffix>] [-a] [<output>=./color
 
 Options:
   -h, --help              Show usage.
-  -p=<prefix>             Add prefix to each name of exported variables.
-  -e=<escaped_suffix>     If set, export escaped variables instead of general variables. And add suffix to each name of escaped variables.
+  -p=<prefix>             If set, Add prefix '<prefix>' to each name of exported variables.
+  -e=<escaped_suffix>     If set, export escaped variables instead of general variables. And add suffix '<escaped_suffix>' to each name of escaped variables.
   -a                      If set, export both general variables and escaped variables.
 EOF
 }
