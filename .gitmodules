@@ -1,5 +1,0 @@
-[submodule "deps/lobash"]
-  path = deps/lobash
-  url = https://github.com/adoyle-h/lobash.git
-  branch = develop
-  shallow = true

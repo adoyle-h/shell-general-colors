@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090
 
 set -o errexit
 set -o nounset
 set -o pipefail
-shopt -s inherit_errexit
-[[ -n "${VERBOSE:+x}" ]] && set -o verbose
-[[ -n "${DEBUG:-}" ]] && IS_DEBUG=true || IS_DEBUG=false
+(shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
 
 # https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
 # ╔══════════╦════════════════════════════════╦═════════════════════════════════════════════════════════════════════════╗
@@ -56,8 +53,8 @@ shopt -s inherit_errexit
 
 readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
-source "$SCRIPT_DIR"/deps/lobash/src/import.bash
-import ask
+# shellcheck source=deps/lobash.bash
+source "$SCRIPT_DIR"/deps/lobash.bash
 
 init() {
   declare -g TARGET
