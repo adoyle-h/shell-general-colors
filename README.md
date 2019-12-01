@@ -18,6 +18,8 @@ Shell General Colors provides simple shell variables which aim to be fast in run
 - [Advanced Usage](#advanced-usage)
     - [Change generated file path](#change-generated-file-path)
     - [Set variable prefix](#set-variable-prefix)
+    - [Export escaped variables](#export-escaped-variables)
+    - [Export both general variables and escaped variables](#export-both-general-variables-and-escaped-variables)
 - [Suggestion, Bug Reporting, Contributing](#suggestion-bug-reporting-contributing)
 - [Versioning](#versioning)
 - [Copyright and License](#copyright-and-license)
@@ -43,6 +45,7 @@ First, generate a colors.bash file to your project.
 
 ```sh
 cd shell-general-colors
+# "./generate -h" to get usage
 ./generate
 # Generated file: colors.bash
 ```
@@ -74,7 +77,7 @@ Then source the colors.bash file and use these variables directly.
 ```sh
 source <path>/colors.bash
 
-echo -e "this is ${RED}red${RESET_ALL}. this is ${YELLOW}yellow"
+echo -e "this is ${RED}red${RESET_ALL}. this is ${YELLOW}yellow${RESET_ALL}."
 ```
 
 ## Advanced Usage
@@ -89,8 +92,31 @@ echo -e "this is ${RED}red${RESET_ALL}. this is ${YELLOW}yellow"
 ### Set variable prefix
 
 ```sh
-PREFIX=C_ ./generate
+./generate -p C_
 # C_BLACK, C_RED, C_BOLD_BLACK ...
+```
+
+### Export escaped variables
+
+```sh
+./generate -e _ESC
+# BLACK_ESC, RED_ESC, BOLD_BLACK_ESC ...
+```
+
+You can use escaped variables with `cat`. For example,
+
+```sh
+cat <<EOF
+this is ${RED_ESC}red${RESET_ALL_ESC}.
+this is ${YELLOW_ESC}yellow${RESET_ALL_ESC}.
+EOF
+```
+
+### Export both general variables and escaped variables
+
+```sh
+./generate -a -e _ESC
+# BLACK, BLACK_ESC, RED, RED_ESC, BOLD_BLACK, BOLD_BLACK_ESC ...
 ```
 
 ## Suggestion, Bug Reporting, Contributing

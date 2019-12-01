@@ -56,15 +56,48 @@ readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 # shellcheck source=deps/lobash.bash
 source "$SCRIPT_DIR"/deps/lobash.bash
 
+declare -A opts=()
+declare -a args=()
+
+usage() {
+  cat <<EOF
+Usage: $0 [-h|--help] [-p=<prefix>] [-e=<escaped_suffix>] [-a] [<output>=./colors.bash]
+
+Options:
+  -h, --help              Show usage.
+  -p=<prefix>             Add prefix to each name of exported variables.
+  -e=<escaped_suffix>     If set, export escaped variables instead of general variables. And add suffix to each name of escaped variables.
+  -a                      If set, export both general variables and escaped variables.
+EOF
+}
+
 init() {
-  declare -g TARGET
-  if [[ -z ${1:-} ]]; then
-    TARGET=colors.bash
+  l.parse_params opts args "$@"
+
+  if [[ ${opts[h]:-} == true ]] || [[ ${opts[help]:-} == true ]]; then
+    usage
+    exit 0
+  fi
+
+  declare -g TARGET EXPORT_GENERAL=false EXPORT_ESCAPED=false
+
+  TARGET=${args[0]:-colors.bash}
+  if [[ -d $TARGET ]]; then
+    TARGET=${TARGET}/colors.bash
+  fi
+
+  # User Specified Environment Variables
+  PREFIX=${opts[p]:-}
+  ESCAPED_SUFFIX=${opts[e]:-}
+
+  if [[ -n ${opts[a]:-} ]]; then
+    EXPORT_GENERAL=true
+    EXPORT_ESCAPED=true
   else
-    if [[ -d $1 ]]; then
-      TARGET=${1}/colors.bash
+    if [[ -n $ESCAPED_SUFFIX ]]; then
+      EXPORT_ESCAPED=true
     else
-      TARGET=${1}
+      EXPORT_GENERAL=true
     fi
   fi
 
@@ -143,6 +176,7 @@ ansi() {
   # local ESC=$'\033'
   # local ESC=$'\x1B'
   # local ESC=$'\u001b'
+
   # Control Sequence Introducer
   local CSI="${ESC}["
   # Operating System Command
@@ -202,7 +236,13 @@ write() {
 }
 
 write_color() {
-  printf -- '%s%s=%s\n' "${PREFIX:-}" "$1" "'$2'" >> "$TARGET"
+  if [[ $EXPORT_GENERAL == true ]]; then
+    printf -- '%s%s=%s\n' "$PREFIX" "$1" "'$2'" >> "$TARGET"
+  fi
+
+  if [[ $EXPORT_ESCAPED == true ]]; then
+    printf -- '%s%s%s=%s\n' "$PREFIX" "$1" "$ESCAPED_SUFFIX" "$'$2'" >> "$TARGET"
+  fi
 }
 
 write_comment_title() {
