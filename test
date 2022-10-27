@@ -3,16 +3,12 @@
 set -o errexit
 set -o nounset
 set -o pipefail
+set -o errtrace
 (shopt -p inherit_errexit &>/dev/null) && shopt -s inherit_errexit
 
 readonly SCRIPT_DIR="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
 
-if [[ ! -f "$SCRIPT_DIR"/colors.bash ]]; then
-  "$SCRIPT_DIR"/generate
-fi
-
-# shellcheck source=colors.bash
-source "$SCRIPT_DIR"/colors.bash
+PREFIX=test_
 
 colors=(
   BLACK
@@ -30,11 +26,28 @@ print_colors() {
   local prefix=${1:-}
   local key
   for c in "${colors[@]}"; do
-    key=${prefix}${c}
+    key="${PREFIX}${prefix}${c}"
     [[ ! -v $key ]] && continue
-    echo -e "- ${!key}${prefix}${c}${RESET_ALL}"
+    echo -e "- ${!key}${prefix}${c}${test_RESET_ALL}"
   done
 }
+
+print_colors_map() {
+  local prefix=${1:-}
+  local key
+  for c in "${colors[@]}"; do
+    key="${prefix}${c}"
+    # shellcheck disable=2154
+    [[ -z ${test_colors[$key]:-} ]] && continue
+    echo -e "- ${test_colors[$key]}${prefix}${c}${test_colors[RESET_ALL]}"
+  done
+}
+
+echo '------ Color List ------'
+
+"$SCRIPT_DIR"/generate -f -a -p $PREFIX
+# shellcheck source=colors.bash
+source "$SCRIPT_DIR"/colors.bash
 
 printf '\n%s\n' '[General Foreground Colors]'
 print_colors
@@ -52,3 +65,26 @@ printf '\n%s\n' '[Bright Colors]'
 print_colors BRI_
 printf '\n%s\n' '[Bright & Bold Colors]'
 print_colors BRI_BOLD_
+
+printf '\n\n%s\n' '------ Color Map ------'
+
+"$SCRIPT_DIR"/generate -f -a --map -p $PREFIX
+# shellcheck source=colors.bash
+source "$SCRIPT_DIR"/colors.bash
+
+printf '\n%s\n' '[General Foreground Colors]'
+print_colors_map
+printf '\n%s\n' '[General Background Colors]'
+print_colors_map BG_
+printf '\n%s\n' '[Bold Colors]'
+print_colors_map BOLD_
+printf '\n%s\n' '[Underline Colors]'
+print_colors_map UL_
+printf '\n%s\n' '[Blink Colors]'
+print_colors_map BLK_
+printf '\n%s\n' '[Reverse Colors]'
+print_colors_map REV_
+printf '\n%s\n' '[Bright Colors]'
+print_colors_map BRI_
+printf '\n%s\n' '[Bright & Bold Colors]'
+print_colors_map BRI_BOLD_
