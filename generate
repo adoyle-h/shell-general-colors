@@ -101,7 +101,7 @@ Options:
   -h, --help              Show usage.
   -f                      If set, force write the colors file
   -p=<prefix>             If set, Add prefix '<prefix>' to each name of exported variables.
-  -e=<escaped_suffix>     If set, export escaped variables instead of general variables. And add suffix '<escaped_suffix>' to each name of escaped variables.
+  -e, -e=<escaped_suffix> If set, export escaped variables instead of general variables. And add suffix '<escaped_suffix>' to each name of escaped variables.
   -a                      If set, export both general variables and escaped variables.
 EOF
 }
@@ -128,8 +128,10 @@ init() {
   if [[ -n ${opts[a]:-} ]]; then
     EXPORT_GENERAL=true
     EXPORT_ESCAPED=true
+    if [[ -z $ESCAPED_SUFFIX ]] || [[ $ESCAPED_SUFFIX == true ]]; then ESCAPED_SUFFIX='_ESC'; fi
   else
     if [[ -n $ESCAPED_SUFFIX ]]; then
+      if [[ $ESCAPED_SUFFIX == true ]]; then ESCAPED_SUFFIX=''; fi
       EXPORT_ESCAPED=true
     else
       EXPORT_GENERAL=true
