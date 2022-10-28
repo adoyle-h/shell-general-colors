@@ -139,10 +139,10 @@ shell-general-colors "~/colors.bash"
 
 ### Force write
 
-The script checks existed file by default. You can force write file with `-f` option.
+The script checks existed file by default. You can force write file with `-y` option.
 
 ```sh
-shell-general-colors -f
+shell-general-colors -y
 # $output generated
 ```
 

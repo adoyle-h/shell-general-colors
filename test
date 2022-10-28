@@ -45,7 +45,7 @@ print_colors_map() {
 
 echo '------ Color List ------'
 
-"$SCRIPT_DIR"/generate -f -a -p $PREFIX
+"$SCRIPT_DIR"/generate -y -a -p $PREFIX
 # shellcheck source=colors.bash
 source "$SCRIPT_DIR"/colors.bash
 
@@ -68,7 +68,7 @@ print_colors BRI_BOLD_
 
 printf '\n\n%s\n' '------ Color Map ------'
 
-"$SCRIPT_DIR"/generate -f -a --map -p $PREFIX
+"$SCRIPT_DIR"/generate -y -a --map -p $PREFIX
 # shellcheck source=colors.bash
 source "$SCRIPT_DIR"/colors.bash
 

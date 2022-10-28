@@ -99,7 +99,7 @@ Usage: $0 [-h|--help] [-p=<prefix>] [-e=<escaped_suffix>] [-a] [<output>=./color
 
 Options:
   -h, --help              Show usage.
-  -f                      If set, force write the colors file
+  -y                      If set, force write the colors file
   -p=<prefix>             If set, Add prefix '<prefix>' to each name of exported variables.
   -e, -e=<escaped_suffix> If set, export escaped variables instead of general variables. And add suffix '<escaped_suffix>' to each name of escaped variables.
   -a                      If set, export both general variables and escaped variables.
@@ -252,7 +252,7 @@ safe_rm() {
 }
 
 clean() {
-  if [[ ${opts[f]:-} != 'true' ]]; then
+  if [[ ${opts[y]:-} != 'true' ]]; then
     if [[ -f $TARGET ]]; then
       local answer
       answer=$(l.ask "Existed file: ${TARGET}. Overwrite it?" N)
