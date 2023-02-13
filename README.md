@@ -13,6 +13,11 @@ Shell General Colors provides simple variables which aim to be fast in runtime w
 
 See [Usage](#usage) and run `./test` to preview.
 
+## Versioning
+
+Read [tags][] for verions.
+The versions follow the rules of [Semantic Versioning 2.0.0](http://semver.org/spec/v2.0.0.html).
+
 ## Installation
 
 ```sh
@@ -27,6 +32,7 @@ sudo ln -s "$PWD/generate" /usr/local/bin/shell-general-colors
 There are two ways to generate colors: list or map.
 
 ### Color List
+
 #### Generate Color List
 
 First, generate a colors.bash file to your project.
@@ -74,6 +80,7 @@ printf 'this is %bblue%b.' "${BLUE}" "${RESET_ALL}"
 If you want to use color variables with [here documents][]. Use [escaped variables](#export-escaped-variables).
 
 ### Color Map
+
 #### Generate Color Map
 
 First, generate a colors.bash file to your project.
@@ -83,6 +90,12 @@ First, generate a colors.bash file to your project.
 # "shell-general-colors -h" to get usage
 shell-general-colors --map
 # Generated file: colors.bash
+```
+
+**Notice**: When use `--map` option and specific output, you must pass `--` before output path.
+
+```sh
+shell-general-colors --map -- colors.bash
 ```
 
 The generated file "colors.bash" will contain below codes.
@@ -184,21 +197,12 @@ shell-general-colors -a -e _ESC
 
 ## Suggestion, Bug Reporting, Contributing
 
-Any suggestions and contributions are always welcome. Please open an [issue][] to talk with me.
-
-## Versioning
-
-See [releases][].
-
-The versioning follows the rules of SemVer 2.0.0.
-
-**Attentions**: anything may have **BREAKING CHANGES** at **ANY TIME** when major version is zero (0.y.z), which is for initial development and the public API should be considered unstable.
-
-For more information on SemVer, please visit http://semver.org/.
+**Before opening new Issue/Discussion/PR and posting any comments**, please read [Contributing Guidelines](https://gcg.adoyle.me/CONTRIBUTING).
 
 ## Copyright and License
 
-Copyright 2019~2022 ADoyle (adoyle.h@gmail.com) Some Rights Reserved. The project is licensed under the **BSD 3-clause License**.
+Copyright 2019-2023 ADoyle (adoyle.h@gmail.com). Some Rights Reserved.
+The project is licensed under the **BSD 3-clause License**.
 
 See the [LICENSE][] file for the specific language governing permissions and limitations under the License.
 
@@ -216,12 +220,15 @@ See the [NOTICE][] file distributed with this work for additional information re
 
 ## Other Projects
 
-[Other shell projects](https://github.com/adoyle-h?tab=repositories&q=&type=source&language=shell&sort=stargazers) created by me.
+- [lobash](https://github.com/adoyle-h/lobash): A modern, safe, powerful utility/library for Bash script development.
+- [one.bash](https://github.com/one-bash/one.bash): An elegant framework to manage commands, completions, dotfiles for bash players.
+- [Other shell projects](https://github.com/adoyle-h?tab=repositories&q=&type=source&language=shell&sort=stargazers) created by me.
+
 
 <!-- links -->
 
 [issue]: https://github.com/adoyle-h/shell-general-colors/issues
-[releases]: https://github.com/adoyle-h/shell-general-colors/releases
+[tags]: https://github.com/adoyle-h/shell-general-colors/tags
 [LICENSE]: ./LICENSE
 [NOTICE]: ./NOTICE
 [ansi]: https://github.com/fidian/ansi
